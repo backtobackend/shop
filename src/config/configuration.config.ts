@@ -4,13 +4,14 @@ export default () => ({
     database: {
         type: 'postgres',
         host: 'localhost',
-        port: 5432,
+        port: 35432,
         username: 'postgres',
         password: '796163',
         database: 'shop',
-        entities: [
-            __dirname + '/../**/*.entity{.ts,.js}',
-        ],
-        synchronize: true,
+        entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
+        migrations: [`${__dirname}/../../db/migrations/*{.ts,.js}`],
+        // autoLoadEntities: true,
+        // synchronize: true,
+        migrationsTableName: 'migrations'
     }
 })
