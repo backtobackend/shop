@@ -7,11 +7,11 @@ export class User {
     id: string
     @Column({type: 'varchar', length: 50})
     name: string
-    @Column({type: 'varchar', length: 50})
+    @Column({type: 'varchar', length: 50, unique: true})
     email: string
     @Column({type: 'varchar', length: 50})
     password: string
-    @Column({type: 'varchar', length: 50})
+    @Column({type: 'varchar', length: 10})
     phone: string
     //map from embedded types to primitives
     @Column((type) => RegistryDates, {prefix: false})

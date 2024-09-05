@@ -1,7 +1,11 @@
 export interface IBaseCrud<T, R> {
     create(createDto: T): Promise<R>;
 
-    patch(updateDto: T): Promise<string>;
+    findOne(id: string): Promise<R>;
 
-    delete(deleteDto: T): Promise<string>;
+    findAll(): Promise<R[]>;
+
+    patch(id: string, updateDto: T): Promise<R>;
+
+    delete(id:string): Promise<string>;
 }

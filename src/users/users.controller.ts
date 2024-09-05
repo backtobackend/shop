@@ -1,8 +1,9 @@
-import {Body, Controller, Get, Param, ParseIntPipe, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post} from '@nestjs/common';
 import {UsersService} from './users.service';
 import {CreateUserDto} from './dto/create-user.dto';
 import {IdDTO} from './dto/id.dto';
 import {ResponseUserDto} from './dto/response-user.dto';
+import {PatchUserDto} from './dto/patch-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -14,8 +15,23 @@ export class UsersController {
         return this.usersService.create(createDto)
     }
 
-    @Get('/:id')
-    async get(@Param() {id}: IdDTO): Promise<number> {
-        return id
+    @Patch(':id')
+    async patch(@Param() {id}: IdDTO, @Body() updateDto: PatchUserDto): Promise<ResponseUserDto> {
+        return this.usersService.patch(id, updateDto)
+    }
+
+    @Delete(':id')
+    async delete(@Param() {id}: IdDTO): Promise<string> {
+        return this.usersService.delete(id)
+    }
+
+    @Get('all')
+    async getAll(): Promise<ResponseUserDto[]> {
+        return this.usersService.findAll()
+    }
+
+    @Get(':id')
+    async get(@Param() {id}: IdDTO): Promise<ResponseUserDto> {
+        return this.usersService.findOne(id)
     }
 }
