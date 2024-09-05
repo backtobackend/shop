@@ -14,6 +14,8 @@ import {ResponseUserDto} from './dto/response-user.dto';
 import {plainToInstance} from 'class-transformer';
 import {PatchUserDto} from './dto/patch-user.dto';
 import {IdDTO} from './dto/id.dto';
+import {PaginationDto} from './dto/pagination.dto';
+import {DEFAULT_PAGE_SIZE} from '../common/utils/global.constants';
 
 @Injectable()
 export class UsersService implements IUserCrud {
@@ -48,8 +50,9 @@ export class UsersService implements IUserCrud {
         return plainToInstance(ResponseUserDto, user)
     }
 
-    async findAll(): Promise<ResponseUserDto[]> {
-        const users = await this.usersRepository.createQueryBuilder('users').getMany()
+    async findAll(paginationDto: PaginationDto): Promise<ResponseUserDto[]> {
+        const {offset, limit = DEFAULT_PAGE_SIZE.USER} = paginationDto
+        const users = await this.usersRepository.createQueryBuilder('users').skip(offset).limit(limit).getMany()
         return plainToInstance(ResponseUserDto, users)
     }
 }
