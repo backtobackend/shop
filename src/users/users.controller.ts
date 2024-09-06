@@ -1,7 +1,7 @@
 import {Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Post, Query} from '@nestjs/common';
 import {UsersService} from './users.service';
 import {CreateUserDto} from './dto/create-user.dto';
-import {IdDTO} from './dto/id.dto';
+import {IdDTO} from '../common/dto/id.dto';
 import {ResponseUserDto} from './dto/response-user.dto';
 import {PatchUserDto} from './dto/patch-user.dto';
 import {PaginationDto} from './dto/pagination.dto';
@@ -18,12 +18,12 @@ export class UsersController {
 
     @Patch(':id')
     async patch(@Param() {id}: IdDTO, @Body() updateDto: PatchUserDto): Promise<ResponseUserDto> {
-        return this.usersService.patch(id, updateDto)
+        return this.usersService.update(id, updateDto)
     }
 
     @Delete(':id')
     async delete(@Param() {id}: IdDTO): Promise<string> {
-        return this.usersService.delete(id)
+        return this.usersService.remove(id)
     }
 
     @Get('all')

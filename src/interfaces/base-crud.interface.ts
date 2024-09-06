@@ -7,7 +7,7 @@ export interface IBaseCrud<T, R> {
 
     findAll(paginationDto: PaginationDto): Promise<R[]>;
 
-    patch(id: string, updateDto: T): Promise<R>;
+    update(id: string, updateDto: T): Promise<R>;
 
-    delete(id: string): Promise<string>;
+    remove(id: string): Promise<string>;
 }

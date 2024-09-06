@@ -1,9 +1,7 @@
 import {
     BadRequestException,
-    HttpException,
     Injectable,
     NotFoundException,
-    ServiceUnavailableException
 } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {User} from './entity/user.entity';
@@ -13,7 +11,6 @@ import {IUserCrud} from './interface/user-crud.interface';
 import {ResponseUserDto} from './dto/response-user.dto';
 import {plainToInstance} from 'class-transformer';
 import {PatchUserDto} from './dto/patch-user.dto';
-import {IdDTO} from './dto/id.dto';
 import {PaginationDto} from './dto/pagination.dto';
 import {DEFAULT_PAGE_SIZE} from '../common/utils/global.constants';
 
@@ -28,7 +25,7 @@ export class UsersService implements IUserCrud {
         return plainToInstance(ResponseUserDto, {id: newUser.identifiers[0].id, ...createDto});
     }
 
-    async delete(id: string): Promise<string> {
+    async remove(id: string): Promise<string> {
         const user = await this.findOne(id)
         if (!user) throw new NotFoundException('User does not exist');
         const deleted = await this.usersRepository.createQueryBuilder().delete().from(User).where('id = :id', {id}).execute()
@@ -37,7 +34,7 @@ export class UsersService implements IUserCrud {
     }
 
 
-    async patch(id: string, updateDto: PatchUserDto): Promise<ResponseUserDto> {
+    async update(id: string, updateDto: PatchUserDto): Promise<ResponseUserDto> {
         const user = await this.findOne(id)
         if (!user) throw new NotFoundException('User does not exist');
         const updated = await this.usersRepository.createQueryBuilder().update(User).set(updateDto).where('id = :id', {id}).execute()
