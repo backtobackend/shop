@@ -1,4 +1,5 @@
 import {Exclude, Expose} from 'class-transformer';
+import {Category} from '../../category/entities/category.entity';
 
 @Exclude()
 export class ResponseProductDto {
@@ -10,4 +11,6 @@ export class ResponseProductDto {
     description: string
     @Expose()
     price: number
+    @Expose()
+    category: Category
 }
