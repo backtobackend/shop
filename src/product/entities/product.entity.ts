@@ -17,7 +17,7 @@ export class Product {
     @Column({type: 'uuid', nullable: true})
     categoryId: string
 
-    @ManyToMany(() => Category, (category) => category.products, {eager: true, onDelete: 'SET NULL'})
+    @ManyToMany(() => Category, (category) => category.products, {eager: true, onDelete: 'CASCADE'})
     @JoinTable({
         name: 'product_category',
         joinColumn: {name: 'product_id', referencedColumnName: 'id'},
