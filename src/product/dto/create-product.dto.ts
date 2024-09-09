@@ -1,5 +1,5 @@
 import {
-    ArrayNotEmpty,
+    ArrayNotEmpty, IsArray,
     IsNotEmpty,
     IsNumber,
     IsOptional,
@@ -23,6 +23,7 @@ export class CreateProductDto {
     @IsPositive()
     @Type(() => Number)
     price: number
-    @IsUUID()
-    categoryId: string
+    @IsArray()
+    @IsString({each: true})
+    categoryIds: string[]
 }

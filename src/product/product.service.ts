@@ -16,10 +16,10 @@ export class ProductService implements IProductCrud {
     }
 
     async create(createProductDto: CreateProductDto): Promise<ResponseProductDto> {
-        // const product = await this.productRepo.createQueryBuilder().insert().into(Product).values(createProductDto).execute();
-        const category = await this.categoryService.findOne(createProductDto.categoryId)
-        createProductDto['categories'] = [category]
-        const product = this.productRepo.create(createProductDto);
+        const product = this.productRepo.create({
+            ...createProductDto,
+            categories: createProductDto.categoryIds.map(categoryId => ({id: categoryId}))
+        });
         const newProduct = await this.productRepo.save(product);
         if (!newProduct) throw new BadRequestException('Category was not created');
         return plainToInstance(ResponseProductDto, newProduct);
