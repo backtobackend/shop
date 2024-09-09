@@ -1,7 +1,7 @@
 import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {RegistryDates} from '../../common/embedded/registry-dates.embedded';
 import {Category} from '../../category/entities/category.entity';
-import {OrderItem} from './order-item.entity';
+import {OrderItem} from '../../orders/entities/order-item.entity';
 
 @Entity('products')
 export class Product {
@@ -18,7 +18,7 @@ export class Product {
     @Column({type: 'uuid', nullable: true})
     categoryId: string
 
-    @ManyToMany(() => Category, (category) => category.products, {eager: true, onDelete: 'CASCADE'})
+    @ManyToMany(() => Category, (category) => category.products, {eager: true})
     @JoinTable({
         name: 'product_category',
         joinColumn: {name: 'product_id', referencedColumnName: 'id'},
@@ -29,7 +29,7 @@ export class Product {
     @OneToMany(() => OrderItem, (item) => item.product)
     items: OrderItem[]
 
-    get orders(){
+    get orders() {
         return this.items.map(item => item.order);
     }
 
