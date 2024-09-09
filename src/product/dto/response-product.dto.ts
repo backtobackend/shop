@@ -12,5 +12,5 @@ export class ResponseProductDto {
     @Expose()
     price: number
     @Expose()
-    category: Category
+    categories: Category[]
 }

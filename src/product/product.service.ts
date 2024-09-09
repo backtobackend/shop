@@ -16,13 +16,13 @@ export class ProductService implements IProductCrud {
     }
 
     async create(createProductDto: CreateProductDto): Promise<ResponseProductDto> {
-        const category = await this.categoryService.findOne(createProductDto.categoryId);
-        if (!category) throw new NotFoundException('Category not found');
+        // const product = await this.productRepo.createQueryBuilder().insert().into(Product).values(createProductDto).execute();
+        const category = await this.categoryService.findOne(createProductDto.categoryId)
         createProductDto['categories'] = [category]
-        console.log('=>(product.service.ts:21) createProductDto', createProductDto);
-        const product = await this.productRepo.createQueryBuilder().insert().into(Product).values(createProductDto).execute();
-        if (!product) throw new BadRequestException('Category was not created');
-        return plainToInstance(ResponseProductDto, product);
+        const product = this.productRepo.create(createProductDto);
+        const newProduct = await this.productRepo.save(product);
+        if (!newProduct) throw new BadRequestException('Category was not created');
+        return plainToInstance(ResponseProductDto, newProduct);
     }
 
     async findAll(paginationDto: PaginationDto): Promise<ResponseProductDto[]> {
@@ -31,7 +31,7 @@ export class ProductService implements IProductCrud {
 
     async findOne(id: string): Promise<ResponseProductDto> {
         // const product = await this.productRepo.createQueryBuilder('product').where('product.id = :id', {id}).getOne()
-        const product = await this.productRepo.findOne({where: {id}, relations: {categories: true}});
+        const product = await this.productRepo.findOne({where: {id}});
         console.log('=>(product.service.ts:30) product', product);
         return plainToInstance(ResponseProductDto, product);
     }

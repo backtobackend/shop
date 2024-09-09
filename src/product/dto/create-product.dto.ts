@@ -1,5 +1,15 @@
-import {IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID} from 'class-validator';
+import {
+    ArrayNotEmpty,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsPositive,
+    IsString,
+    IsUUID,
+    ValidateNested
+} from 'class-validator';
 import {Type} from 'class-transformer';
+import {IdDTO} from '../../common/dto/id.dto';
 
 export class CreateProductDto {
     @IsString()
@@ -7,13 +17,12 @@ export class CreateProductDto {
     name: string;
     @IsString()
     @IsOptional()
-    @IsNotEmpty()
     description?: string;
-    @IsNumber()
+    @IsNumber({maxDecimalPlaces: 2})
     @IsNotEmpty()
+    @IsPositive()
     @Type(() => Number)
     price: number
     @IsUUID()
-    @IsNotEmpty()
-    categoryId: string;
+    categoryId: string
 }

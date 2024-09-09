@@ -10,7 +10,7 @@ export class Product {
     @Column({type: 'varchar', length: 100, unique: true})
     name: string
     @Column({type: 'varchar', length: 300, nullable: true})
-    description: string;
+    description?: string;
     @Column({type: 'decimal', precision: 6, scale: 2})
     price: number;
     @Column(() => RegistryDates, {prefix: false})
@@ -33,7 +33,7 @@ export class Product {
         return this.items.map(item => item.order);
     }
 
-    constructor(entity: Product) {
+    constructor(entity: Partial<Product>) {
         Object.assign(this, entity)
     }
 }
