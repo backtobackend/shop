@@ -4,7 +4,7 @@ import {CreateUserDto} from './dto/create-user.dto';
 import {IdDTO} from '../common/dto/id.dto';
 import {ResponseUserDto} from './dto/response-user.dto';
 import {PatchUserDto} from './dto/patch-user.dto';
-import {PaginationDto} from './dto/pagination.dto';
+import {PaginationDto} from '../common/dto/pagination.dto';
 
 @Controller('users')
 export class UsersController {

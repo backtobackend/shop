@@ -1,4 +1,4 @@
-import {PaginationDto} from '../users/dto/pagination.dto';
+import {PaginationDto} from '../common/dto/pagination.dto';
 
 export interface IBaseCrud<T, R> {
     create(createDto: T): Promise<R>;

@@ -11,7 +11,7 @@ import {IUserCrud} from './interface/user-crud.interface';
 import {ResponseUserDto} from './dto/response-user.dto';
 import {plainToInstance} from 'class-transformer';
 import {PatchUserDto} from './dto/patch-user.dto';
-import {PaginationDto} from './dto/pagination.dto';
+import {PaginationDto} from '../common/dto/pagination.dto';
 import {DEFAULT_PAGE_SIZE} from '../common/utils/global.constants';
 
 @Injectable()
