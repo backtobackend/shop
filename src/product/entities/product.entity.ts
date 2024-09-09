@@ -1,6 +1,7 @@
-import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {RegistryDates} from '../../common/embedded/registry-dates.embedded';
 import {Category} from '../../category/entities/category.entity';
+import {OrderItem} from './order-item.entity';
 
 @Entity('products')
 export class Product {
@@ -24,6 +25,13 @@ export class Product {
         inverseJoinColumn: {name: 'category_id', referencedColumnName: 'id'},
     })
     categories: Category[]
+
+    @OneToMany(() => OrderItem, (item) => item.product)
+    items: OrderItem[]
+
+    get orders(){
+        return this.items.map(item => item.order);
+    }
 
     constructor(entity: Product) {
         Object.assign(this, entity)
