@@ -6,5 +6,5 @@ export class ResponseOrderDto {
     @Expose()
     id: string
     @Expose()
-    orderStatus: OrderStatus
+    status: OrderStatus
 }
