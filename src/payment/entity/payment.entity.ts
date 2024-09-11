@@ -9,7 +9,7 @@ export class Payment {
     @Column(() => RegistryDates, {prefix: false})
     registryDates: RegistryDates;
 
-    @OneToOne(() => Order, order => order.payment, {nullable: false, onDelete: 'CASCADE'})
+    @OneToOne(() => Order, order => order.payment, {nullable: false, onDelete: 'CASCADE', eager:true})
     @JoinColumn({name: 'order_id'})
     order: Order
 }

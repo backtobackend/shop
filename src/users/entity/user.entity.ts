@@ -18,6 +18,10 @@ export class User {
     @Column((type) => RegistryDates, {prefix: false})
     registryDates: RegistryDates
 
-    @OneToMany(() => Order, (order) => order.user)
+    @OneToMany(() => Order, (order) => order.user, {cascade: ['soft-remove', 'recover']})
     orders: Order[];
+
+    get isDeleted() {
+        return !!this.registryDates.deletedAt
+    }
 }

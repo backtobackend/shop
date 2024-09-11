@@ -5,6 +5,7 @@ import {IdDTO} from '../common/dto/id.dto';
 import {ResponseUserDto} from './dto/response-user.dto';
 import {PatchUserDto} from './dto/patch-user.dto';
 import {PaginationDto} from '../common/dto/pagination.dto';
+import {SoftDeleteDto} from '../common/dto/soft-delete.dto';
 
 @Controller('users')
 export class UsersController {
@@ -22,8 +23,15 @@ export class UsersController {
     }
 
     @Delete(':id')
-    async delete(@Param() {id}: IdDTO): Promise<string> {
-        return this.usersService.remove(id)
+    async delete(@Param() {id}: IdDTO, @Query() {soft}: SoftDeleteDto): Promise<string> {
+        console.log("=>(users.controller.ts:27) soft", soft);
+        return this.usersService.remove(id, soft)
+    }
+
+    @Patch(':id/recover')
+    recover(@Param() {id}: IdDTO): Promise<ResponseUserDto> {
+        console.log("=>(users.controller.ts:32) id", id);
+        return this.usersService.recover(id)
     }
 
     @Get('all')

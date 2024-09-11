@@ -1,5 +1,5 @@
 import {
-    BadRequestException,
+    BadRequestException, ConflictException,
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
@@ -25,10 +25,14 @@ export class UsersService implements IUserCrud {
         return plainToInstance(ResponseUserDto, {id: newUser.identifiers[0].id, ...createDto});
     }
 
-    async remove(id: string): Promise<string> {
+    async remove(id: string, soft?: boolean): Promise<string> {
         const user = await this.findOne(id)
         if (!user) throw new NotFoundException('User does not exist');
-        const deleted = await this.usersRepository.createQueryBuilder().delete().from(User).where('id = :id', {id}).execute()
+        let deleted: any
+        console.log(soft)
+        soft ?
+            deleted = await this.usersRepository.createQueryBuilder().softDelete().from(User).where('id = :id', {id}).execute() :
+            deleted = await this.usersRepository.createQueryBuilder().delete().from(User).where('id = :id', {id}).execute()
         if (deleted.affected < 1) throw new NotFoundException('User was not deleted');
         return `user ${id} was deleted`
     }
@@ -42,8 +46,13 @@ export class UsersService implements IUserCrud {
         return plainToInstance(ResponseUserDto, updateDto)
     }
 
-    async findOne(id: string): Promise<ResponseUserDto> {
-        const user = await this.usersRepository.createQueryBuilder('users').where('users.id = :id', {id}).getOne()
+    async findOne(id: string, soft?: boolean): Promise<ResponseUserDto> {
+        const user = await this.usersRepository.createQueryBuilder('users').leftJoinAndSelect('users.orders', 'orders').leftJoinAndSelect('orders.items', 'items').where('users.id = :id', {id}).getOne()
+        // const user = await this.usersRepository.findOne({
+        //     where: {id}, relations: {
+        //         orders: true
+        //     }
+        // });
         return plainToInstance(ResponseUserDto, user)
     }
 
@@ -51,5 +60,17 @@ export class UsersService implements IUserCrud {
         const {offset, limit = DEFAULT_PAGE_SIZE.USER} = paginationDto
         const users = await this.usersRepository.createQueryBuilder('users').skip(offset).limit(limit).getMany()
         return plainToInstance(ResponseUserDto, users)
+    }
+
+    async recover(id: string): Promise<ResponseUserDto> {
+        const user = await this.usersRepository.findOne({
+            where: {id},
+            relations: {orders: {items: true, payment: true}},
+            withDeleted: true
+        })
+        if (!user) throw new NotFoundException('User does not exist')
+        if (user.isDeleted) throw new ConflictException('user not deleted')
+        const recovered = await this.usersRepository.recover(user)
+        return plainToInstance(ResponseUserDto, recovered)
     }
 }
