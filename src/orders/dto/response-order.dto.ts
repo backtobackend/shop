@@ -1,8 +1,7 @@
 import {Exclude, Expose} from 'class-transformer';
 import {OrderStatus} from '../enums/order-status.enum';
-import {ResponseProductDto} from '../../product/dto/response-product.dto';
-import {Product} from '../../product/entities/product.entity';
 import {OrderItem} from '../entities/order-item.entity';
+import {Payment} from '../../payment/entity/payment.entity';
 
 @Exclude()
 export class ResponseOrderDto {
@@ -12,4 +11,6 @@ export class ResponseOrderDto {
     status: OrderStatus
     @Expose()
     items: OrderItem[]
+    @Expose()
+    payment: Payment
 }
