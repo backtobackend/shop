@@ -13,13 +13,15 @@ import {plainToInstance} from 'class-transformer';
 import {PatchUserDto} from './dto/patch-user.dto';
 import {PaginationDto} from '../common/dto/pagination.dto';
 import {DEFAULT_PAGE_SIZE} from '../common/utils/global.constants';
+import {HashService} from '../auth/hash/hash.service';
 
 @Injectable()
 export class UsersService implements IUserCrud {
-    constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) {
+    constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>, private readonly hashService: HashService) {
     }
 
     async create(createDto: CreateUserDto): Promise<ResponseUserDto> {
+        createDto.password = await this.hashService.hash(createDto.password);
         const newUser = await this.usersRepository.createQueryBuilder().insert().into(User).values(createDto).execute()
         if (newUser.identifiers.length < 1) throw new NotFoundException('User creation failed');
         return plainToInstance(ResponseUserDto, {id: newUser.identifiers[0].id, ...createDto});
@@ -39,9 +41,14 @@ export class UsersService implements IUserCrud {
 
 
     async update(id: string, updateDto: PatchUserDto): Promise<ResponseUserDto> {
+        const {password} = updateDto;
+        const hashedPassword = password && (await this.hashService.hash(password));
         const user = await this.findOne(id)
         if (!user) throw new NotFoundException('User does not exist');
-        const updated = await this.usersRepository.createQueryBuilder().update(User).set(updateDto).where('id = :id', {id}).execute()
+        const updated = await this.usersRepository.createQueryBuilder().update(User).set({
+            ...updateDto,
+            password: hashedPassword
+        }).where('id = :id', {id}).execute()
         if (updated.affected < 1) throw new BadRequestException('User was not updated');
         return plainToInstance(ResponseUserDto, updateDto)
     }

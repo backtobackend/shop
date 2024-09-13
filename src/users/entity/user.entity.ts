@@ -1,4 +1,4 @@
-import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {RegistryDates} from '../../common/embedded/registry-dates.embedded';
 import {Order} from '../../orders/entities/order.entity';
 
@@ -10,7 +10,7 @@ export class User {
     name: string
     @Column({type: 'varchar', length: 50, unique: true})
     email: string
-    @Column({type: 'varchar', length: 50})
+    @Column({type: 'varchar'})
     password: string
     @Column({type: 'varchar', length: 10, nullable: true})
     phone: string
