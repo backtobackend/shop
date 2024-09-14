@@ -17,11 +17,10 @@ import {HashService} from '../auth/hash/hash.service';
 
 @Injectable()
 export class UsersService implements IUserCrud {
-    constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>, private readonly hashService: HashService) {
+    constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) {
     }
 
     async create(createDto: CreateUserDto): Promise<ResponseUserDto> {
-        createDto.password = await this.hashService.hash(createDto.password);
         const newUser = await this.usersRepository.createQueryBuilder().insert().into(User).values(createDto).execute()
         if (newUser.identifiers.length < 1) throw new NotFoundException('User creation failed');
         return plainToInstance(ResponseUserDto, {id: newUser.identifiers[0].id, ...createDto});
@@ -31,7 +30,6 @@ export class UsersService implements IUserCrud {
         const user = await this.findOne(id)
         if (!user) throw new NotFoundException('User does not exist');
         let deleted: any
-        console.log(soft)
         soft ?
             deleted = await this.usersRepository.createQueryBuilder().softDelete().from(User).where('id = :id', {id}).execute() :
             deleted = await this.usersRepository.createQueryBuilder().delete().from(User).where('id = :id', {id}).execute()
@@ -39,27 +37,15 @@ export class UsersService implements IUserCrud {
         return `user ${id} was deleted`
     }
 
-
     async update(id: string, updateDto: PatchUserDto): Promise<ResponseUserDto> {
-        const {password} = updateDto;
-        const hashedPassword = password && (await this.hashService.hash(password));
-        const user = await this.findOne(id)
-        if (!user) throw new NotFoundException('User does not exist');
-        const updated = await this.usersRepository.createQueryBuilder().update(User).set({
-            ...updateDto,
-            password: hashedPassword
-        }).where('id = :id', {id}).execute()
-        if (updated.affected < 1) throw new BadRequestException('User was not updated');
-        return plainToInstance(ResponseUserDto, updateDto)
+        const user = await this.usersRepository.preload({id, ...updateDto})
+        if (!user) throw new BadRequestException('User was not updated');
+        await this.usersRepository.save(user);
+        return plainToInstance(ResponseUserDto, user)
     }
 
-    async findOne(id: string, soft?: boolean): Promise<ResponseUserDto> {
+    async findOne(id: string): Promise<ResponseUserDto> {
         const user = await this.usersRepository.createQueryBuilder('users').leftJoinAndSelect('users.orders', 'orders').leftJoinAndSelect('orders.items', 'items').where('users.id = :id', {id}).getOne()
-        // const user = await this.usersRepository.findOne({
-        //     where: {id}, relations: {
-        //         orders: true
-        //     }
-        // });
         return plainToInstance(ResponseUserDto, user)
     }
 
