@@ -1,4 +1,5 @@
 import {IsEmail, IsNotEmpty, IsString} from 'class-validator';
+import {IsPassword} from '../../common/decorators/validators/is-password.decorator';
 
 export class LoginDto {
     @IsString()
@@ -7,5 +8,6 @@ export class LoginDto {
     email: string
     @IsString()
     @IsNotEmpty()
+    @IsPassword()
     password: string
 }

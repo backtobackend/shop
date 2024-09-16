@@ -10,7 +10,7 @@ export class ResponseUserDto {
     @Expose()
     email: string;
     @Expose()
-    phone: number
+    phone: string
     @Expose()
     orders:Order[]
 }
