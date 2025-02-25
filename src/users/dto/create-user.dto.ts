@@ -13,6 +13,11 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
     @MinLength(4, {message: 'password should be minimum 4 characters long'})
+    /**
+     * Requires
+     * minimum 4 digits
+     * minimum 1 letter
+     */
     @IsPassword()
     password: string
     @IsNotEmpty()

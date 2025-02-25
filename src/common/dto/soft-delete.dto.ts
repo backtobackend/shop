@@ -4,5 +4,5 @@ import {IsBoolean} from '../decorators/validators/is-boolean.decorator';
 export class SoftDeleteDto {
     @IsOptional()
     @IsBoolean()
-    readonly soft: boolean;
+    readonly soft?: boolean;
 }

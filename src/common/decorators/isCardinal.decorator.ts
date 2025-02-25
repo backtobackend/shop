@@ -4,4 +4,4 @@ import {IsInt, IsPositive, ValidationOptions} from 'class-validator';
 /**
  *
  */
-export const isCardinal = (validationOptions?: ValidationOptions): PropertyDecorator => applyDecorators(IsInt(validationOptions), IsPositive(validationOptions))
+export const IsCardinal = (validationOptions?: ValidationOptions): PropertyDecorator => applyDecorators(IsInt(validationOptions), IsPositive(validationOptions))

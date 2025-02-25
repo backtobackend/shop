@@ -1,5 +1,4 @@
-import {IsIn, IsInt, IsNotEmpty, IsPositive, IsUUID} from 'class-validator';
-import {Type} from 'class-transformer';
+import {IsNotEmpty, IsUUID} from 'class-validator';
 
 export class IdDTO {
     @IsUUID()

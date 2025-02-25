@@ -1,4 +1,4 @@
-import {PaginationDto} from '../common/dto/pagination.dto';
+import {PaginationDto} from '../querying/dto/pagination.dto';
 
 export interface IBaseCrud<T, R> {
     create(createDto: T): Promise<R>;
@@ -9,5 +9,9 @@ export interface IBaseCrud<T, R> {
 
     update(id: string, updateDto: T): Promise<R>;
 
-    remove(id: string): Promise<string>;
+    // update(id: string, updateDto: T, userId?: string): Promise<R>;
+
+    remove(id: string, soft?: boolean): Promise<string>;
+
+    // remove(id: string, soft?: boolean, userId?: string): Promise<string>;
 }

@@ -1,6 +1,7 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {RegistryDates} from '../../common/embedded/registry-dates.embedded';
 import {Order} from '../../orders/entities/order.entity';
+import {Role} from '../../auth/roles/role.enum';
 
 @Entity('users')
 export class User {
@@ -17,6 +18,8 @@ export class User {
     //map from embedded types to primitives
     @Column((type) => RegistryDates, {prefix: false})
     registryDates: RegistryDates
+    @Column({type: 'enum', enum: Role, default: Role.USER})
+    role: Role
 
     @OneToMany(() => Order, (order) => order.user, {cascade: ['soft-remove', 'recover']})
     orders: Order[];
