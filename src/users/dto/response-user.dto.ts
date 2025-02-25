@@ -1,5 +1,6 @@
 import {Exclude, Expose} from 'class-transformer';
 import {Order} from '../../orders/entities/order.entity';
+import {Role} from '../../auth/roles/role.enum';
 
 @Exclude()
 export class ResponseUserDto {
@@ -10,7 +11,9 @@ export class ResponseUserDto {
     @Expose()
     email: string;
     @Expose()
-    phone: number
+    phone: string
     @Expose()
-    orders:Order[]
+    orders: Order[]
+    @Expose()
+    role: Role
 }

@@ -1,37 +1,52 @@
-import {Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Post, Query} from '@nestjs/common';
+import {
+    Body, ConflictException,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Query
+} from '@nestjs/common';
 import {UsersService} from './users.service';
 import {CreateUserDto} from './dto/create-user.dto';
 import {IdDTO} from '../common/dto/id.dto';
 import {ResponseUserDto} from './dto/response-user.dto';
 import {PatchUserDto} from './dto/patch-user.dto';
-import {PaginationDto} from '../common/dto/pagination.dto';
+import {PaginationDto} from '../querying/dto/pagination.dto';
 import {SoftDeleteDto} from '../common/dto/soft-delete.dto';
+import {Public} from '../auth/decorators/is-public.decorator';
+import {User} from '../auth/decorators/user.decorator';
+import {IUserRequest} from '../auth/interface/user-request.interface';
+import {LoginDto} from '../auth/dto/login.dto';
+import {ApiTags} from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {
     }
 
+    @Public()
     @Post()
     async create(@Body() createDto: CreateUserDto): Promise<ResponseUserDto> {
         return this.usersService.create(createDto)
     }
 
+    @Public()
+    @Patch('recover')
+    recover(@Body() loginDto: LoginDto): Promise<ResponseUserDto> {
+        return this.usersService.recover(loginDto)
+    }
+
     @Patch(':id')
-    async patch(@Param() {id}: IdDTO, @Body() updateDto: PatchUserDto): Promise<ResponseUserDto> {
-        return this.usersService.update(id, updateDto)
+    async patch(@Param() {id}: IdDTO, @Body() updateDto: PatchUserDto, @User() user: ResponseUserDto): Promise<ResponseUserDto> {
+        return this.usersService.update(id, updateDto, user)
     }
 
     @Delete(':id')
-    async delete(@Param() {id}: IdDTO, @Query() {soft}: SoftDeleteDto): Promise<string> {
-        console.log("=>(users.controller.ts:27) soft", soft);
-        return this.usersService.remove(id, soft)
-    }
-
-    @Patch(':id/recover')
-    recover(@Param() {id}: IdDTO): Promise<ResponseUserDto> {
-        console.log("=>(users.controller.ts:32) id", id);
-        return this.usersService.recover(id)
+    async delete(@Param() {id}: IdDTO, @Query() {soft}: SoftDeleteDto, @User() user: ResponseUserDto): Promise<string> {
+        return this.usersService.remove(id, soft, user)
     }
 
     @Get('all')

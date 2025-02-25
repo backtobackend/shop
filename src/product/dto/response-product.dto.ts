@@ -13,4 +13,6 @@ export class ResponseProductDto {
     price: number
     @Expose()
     categories: Category[]
+    @Expose()
+    images: string[]
 }
